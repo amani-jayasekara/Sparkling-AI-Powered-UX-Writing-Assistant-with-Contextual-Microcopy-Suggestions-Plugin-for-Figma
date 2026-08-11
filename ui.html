@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>AI UX Writing Assistant</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: #ffffff;
+      color: #222222;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .header {
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .header p {
+      margin: 0;
+      font-size: 13px;
+      color: #777777;
+      line-height: 1.4;
+    }
+
+    .card {
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 14px;
+      background: #ffffff;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .status-label {
+      color: #555555;
+    }
+
+    .status {
+      font-weight: 600;
+    }
+
+    .status.success {
+      color: #16803c;
+    }
+
+    .status.error {
+      color: #c62828;
+    }
+
+    .status.warning {
+      color: #b26a00;
+    }
+
+    .selection-box {
+      background: #f7f7f7;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 70px;
+    }
+
+    .selection-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .selection-type {
+      font-size: 12px;
+      color: #777777;
+    }
+
+    .message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 7px;
+      font-size: 12px;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: #eaf7ee;
+      color: #176b35;
+    }
+
+    .message.error {
+      display: block;
+      background: #fdecec;
+      color: #a32121;
+    }
+
+    .message.info {
+      display: block;
+      background: #f1f1f1;
+      color: #555555;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    button.primary {
+      background: #18a0fb;
+      color: white;
+    }
+
+    button.primary:hover {
+      background: #0d8de3;
+    }
+
+    button.secondary {
+      background: #eeeeee;
+      color: #333333;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .request-section {
+      display: none;
+    }
+
+    .request-section.visible {
+      display: block;
+    }
+
+    .small-text {
+      font-size: 11px;
+      color: #888888;
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+
+    .loader {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #dddddd;
+      border-top-color: #18a0fb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .footer {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 10px;
+      color: #999999;
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+      <h1>AI UX Writing Assistant</h1>
+
+      <p>
+        Context-aware microcopy generation for your Figma designs.
+      </p>
+
+    </div>
+
+
+    <!-- FR-02 + FR-03 + FR-04 -->
+
+    <div class="card">
+
+      <div class="card-title">
+        Plugin Status
+      </div>
+
+
+      <div class="status-row">
+
+        <span class="status-label">
+          Figma File
+        </span>
+
+        <span
+          id="fileStatus"
+          class="status warning"
+        >
+          Checking...
+        </span>
+
+      </div>
+
+
+      <div class="status-row">
+
+        <span class="status-label">
+          Compatibility
+        </span>
+
+        <span
+          id="compatibilityStatus"
+          class="status warning"
+        >
+          Checking...
+        </span>
+
+      </div>
+
+
+      <div class="status-row">
+
+        <span class="status-label">
+          Plugin Session
+        </span>
+
+        <span
+          id="sessionStatus"
+          class="status warning"
+        >
+          Checking...
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- FR-06 to FR-10 -->
+
+    <div class="card">
+
+      <div class="card-title">
+        Selected UI Element
+      </div>
+
+
+      <div
+        id="selectionBox"
+        class="selection-box"
+      >
+
+        <div
+          id="selectionName"
+          class="selection-name"
+        >
+          No element selected
+        </div>
+
+
+        <div
+          id="selectionType"
+          class="selection-type"
+        >
+          Select one UI element on the Figma canvas.
+        </div>
+
+      </div>
+
+
+      <div
+        id="selectionMessage"
+        class="message"
+      ></div>
+
+
+      <button
+        id="checkSelectionButton"
+        class="secondary"
+      >
+        Check Selection
+      </button>
+
+    </div>
+
+
+    <!-- FR-10 + FR-11 -->
+
+    <div
+      id="requestSection"
+      class="card request-section"
+    >
+
+      <div class="card-title">
+        Microcopy
+      </div>
+
+
+      <div class="message success">
+        ✓ UI element validated successfully.
+      </div>
+
+
+      <p class="small-text">
+        This element is ready for a microcopy request.
+      </p>
+
+
+      <button
+        id="requestButton"
+        class="primary"
+      >
+        Generate Microcopy
+      </button>
+
+    </div>
+
+
+    <!-- INFORMATION -->
+
+    <div class="card">
+
+      <div class="card-title">
+        How to use
+      </div>
+
+
+      <div class="small-text">
+
+        1. Open a Figma design file.
+
+        <br /><br />
+
+        2. Select one editable UI element.
+
+        <br /><br />
+
+        3. The plugin automatically detects the selection.
+
+        <br /><br />
+
+        4. Once validated, the microcopy request becomes available.
+
+      </div>
+
+    </div>
+
+
+    <!-- CLOSE -->
+
+    <button
+      id="closeButton"
+      class="secondary"
+    >
+      Close Plugin
+    </button>
+
+
+    <div class="footer">
+      AI UX Writing Assistant • RUSL Project
+    </div>
+
+  </div>
+
+
+  <script>
+
+    // ========================================================
+    // ELEMENT REFERENCES
+    // ========================================================
+
+    const fileStatus =
+      document.getElementById("fileStatus");
+
+    const compatibilityStatus =
+      document.getElementById("compatibilityStatus");
+
+    const sessionStatus =
+      document.getElementById("sessionStatus");
+
+    const selectionName =
+      document.getElementById("selectionName");
+
+    const selectionType =
+      document.getElementById("selectionType");
+
+    const selectionMessage =
+      document.getElementById("selectionMessage");
+
+    const requestSection =
+      document.getElementById("requestSection");
+
+    const checkSelectionButton =
+      document.getElementById("checkSelectionButton");
+
+    const requestButton =
+      document.getElementById("requestButton");
+
+    const closeButton =
+      document.getElementById("closeButton");
+
+
+    // ========================================================
+    // MESSAGE HELPER
+    // ========================================================
+
+    function showMessage(message, type) {
+
+      selectionMessage.textContent = message;
+
+      selectionMessage.className =
+        "message " + type;
+    }
+
+
+    // ========================================================
+    // FR-02 FILE STATUS
+    // ========================================================
+
+    function updateFileStatus(valid, message) {
+
+      if (valid) {
+
+        fileStatus.textContent = "Valid";
+
+        fileStatus.className =
+          "status success";
+
+      } else {
+
+        fileStatus.textContent = "Invalid";
+
+        fileStatus.className =
+          "status error";
+
+        if (message) {
+          showMessage(message, "error");
+        }
+      }
+    }
+
+
+    // ========================================================
+    // FR-03 COMPATIBILITY
+    // ========================================================
+
+    function updateCompatibilityStatus(
+      compatible,
+      message
+    ) {
+
+      if (compatible) {
+
+        compatibilityStatus.textContent =
+          "Compatible";
+
+        compatibilityStatus.className =
+          "status success";
+
+      } else {
+
+        compatibilityStatus.textContent =
+          "Not Compatible";
+
+        compatibilityStatus.className =
+          "status error";
+
+        if (message) {
+          showMessage(message, "error");
+        }
+      }
+    }
+
+
+    // ========================================================
+    // FR-04 SESSION
+    // ========================================================
+
+    function updateSessionStatus(active) {
+
+      if (active) {
+
+        sessionStatus.textContent =
+          "Active";
+
+        sessionStatus.className =
+          "status success";
+
+      } else {
+
+        sessionStatus.textContent =
+          "Inactive";
+
+        sessionStatus.className =
+          "status error";
+      }
+    }
+
+
+    // ========================================================
+    // FR-06 to FR-10
+    // HANDLE VALID SELECTION
+    // ========================================================
+
+    function handleValidSelection(data) {
+
+      selectionName.textContent =
+        data.elementName || "Unnamed element";
+
+      selectionType.textContent =
+        "Type: " +
+        (data.elementType || "Unknown");
+
+
+      showMessage(
+        "UI element successfully validated.",
+        "success"
+      );
+
+
+      requestSection.classList.add(
+        "visible"
+      );
+
+      requestButton.disabled = false;
+    }
+
+
+    // ========================================================
+    // HANDLE INVALID SELECTION
+    // ========================================================
+
+    function handleInvalidSelection(data) {
+
+      selectionName.textContent =
+        "No valid element";
+
+      selectionType.textContent =
+        "Please select one editable UI element.";
+
+
+      requestSection.classList.remove(
+        "visible"
+      );
+
+
+      showMessage(
+        data.message ||
+        "Selection is invalid.",
+        "error"
+      );
+    }
+
+
+    // ========================================================
+    // Figma → UI MESSAGE HANDLER
+    // ========================================================
+
+    window.onmessage = (event) => {
+
+      const message =
+        event.data.pluginMessage;
+
+
+      if (!message) {
+        return;
+      }
+
+
+      console.log(
+        "[AI UX Writing Assistant] Message:",
+        message
+      );
+
+
+      // ======================================================
+      // PLUGIN READY
+      // FR-01 + FR-02 + FR-03 + FR-04
+      // ======================================================
+
+      if (message.type === "PLUGIN_READY") {
+
+        updateFileStatus(
+          message.fileAvailable,
+          message.message
+        );
+
+
+        updateCompatibilityStatus(
+          message.compatible,
+          message.message
+        );
+
+
+        updateSessionStatus(
+          message.sessionActive
+        );
+
+
+        return;
+      }
+
+
+      // ======================================================
+      // PLUGIN STATUS
+      // FR-02 + FR-03 + FR-04
+      // ======================================================
+
+      if (message.type === "PLUGIN_STATUS") {
+
+        updateFileStatus(
+          message.fileAvailable,
+          message.message
+        );
+
+
+        updateCompatibilityStatus(
+          message.compatible,
+          message.message
+        );
+
+
+        updateSessionStatus(
+          message.sessionActive
+        );
+
+
+        return;
+      }
+
+
+      // ======================================================
+      // VALID ELEMENT
+      // FR-06 to FR-10
+      // ======================================================
+
+      if (message.type === "ELEMENT_SELECTED") {
+
+        handleValidSelection(message);
+
+        return;
+      }
+
+
+      // ======================================================
+      // INVALID ELEMENT
+      // FR-06 to FR-08
+      // ======================================================
+
+      if (message.type === "SELECTION_INVALID") {
+
+        handleInvalidSelection(message);
+
+        return;
+      }
+
+
+      // ======================================================
+      // CONFIGURATION
+      // FR-11
+      // ======================================================
+
+      if (message.type === "OPEN_CONFIGURATION") {
+
+        showMessage(
+          "Microcopy configuration is ready.",
+          "success"
+        );
+
+        return;
+      }
+
+
+      // ======================================================
+      // ERROR
+      // ======================================================
+
+      if (message.type === "ERROR") {
+
+        showMessage(
+          message.message ||
+          "An error occurred.",
+          "error"
+        );
+
+        return;
+      }
+
+    };
+
+
+    // ========================================================
+    // CHECK SELECTION
+    // ========================================================
+
+    checkSelectionButton.addEventListener(
+      "click",
+      () => {
+
+        checkSelectionButton.disabled = true;
+
+        checkSelectionButton.innerHTML =
+          '<span class="loader"></span> Checking...';
+
+
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "GET_SELECTION"
+            }
+          },
+          "*"
+        );
+
+
+        setTimeout(() => {
+
+          checkSelectionButton.disabled =
+            false;
+
+          checkSelectionButton.textContent =
+            "Check Selection";
+
+        }, 700);
+
+      }
+    );
+
+
+    // ========================================================
+    // GENERATE MICROCOPY
+    // FR-10 + FR-11
+    // ========================================================
+
+    requestButton.addEventListener(
+      "click",
+      () => {
+
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "REQUEST_MICROCOPY"
+            }
+          },
+          "*"
+        );
+
+      }
+    );
+
+
+    // ========================================================
+    // CLOSE PLUGIN
+    // FR-05
+    // ========================================================
+
+    closeButton.addEventListener(
+      "click",
+      () => {
+
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "CLOSE_PLUGIN"
+            }
+          },
+          "*"
+        );
+
+      }
+    );
+
+  </script>
+
+</body>
+
+</html>
