@@ -1,0 +1,19 @@
+{
+  "evaluation_dataset": "test.jsonl",
+  "test_records": 144,
+  "baseline": {
+    "exact_match": 6.25,
+    "rouge_l": 53.64,
+    "semantic_similarity": 68.13
+  },
+  "fine_tuned": {
+    "exact_match": 33.33,
+    "rouge_l": 58.83,
+    "semantic_similarity": 73.21
+  },
+  "improvement_percentage_points": {
+    "exact_match": 27.08,
+    "rouge_l": 5.19,
+    "semantic_similarity": 5.08
+  }
+}
