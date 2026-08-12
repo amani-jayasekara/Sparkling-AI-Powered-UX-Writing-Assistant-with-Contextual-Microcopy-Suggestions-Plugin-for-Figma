@@ -1,0 +1,13 @@
+torch
+transformers
+peft
+bitsandbytes
+accelerate
+datasets
+sentence-transformers
+scikit-learn
+rouge-score
+pandas
+numpy
+fastapi
+uvicorn
