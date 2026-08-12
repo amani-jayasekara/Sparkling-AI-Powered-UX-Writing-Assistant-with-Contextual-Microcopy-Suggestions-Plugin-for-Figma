@@ -4,6 +4,7 @@ peft
 bitsandbytes
 accelerate
 datasets
+trl
 sentence-transformers
 scikit-learn
 rouge-score
