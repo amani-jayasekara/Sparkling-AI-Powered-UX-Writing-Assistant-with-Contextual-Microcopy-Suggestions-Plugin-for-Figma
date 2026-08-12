@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model weights
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Local model directories
+final_adapter/
+sparkling_qlora/
+models/
+
+# Hugging Face cache
+.cache/
+huggingface_cache/
+
+# Secrets
+.env
+*.key
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
