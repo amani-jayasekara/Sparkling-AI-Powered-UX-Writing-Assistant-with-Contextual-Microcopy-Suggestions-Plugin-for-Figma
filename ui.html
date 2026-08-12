@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>AI UX Writing Assistant</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: #f6f1eb;
+      color: #2d211b;
+    }
+
+    button,
+    select,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* -------------------------------------------------------
+       HEADER
+    ------------------------------------------------------- */
+
+    .header {
+      background: #2f2c2a;
+      color: white;
+
+      height: 54px;
+
+      display: flex;
+      align-items: center;
+
+      padding: 0 16px;
+
+      gap: 10px;
+    }
+
+    .header-icon {
+      width: 28px;
+      height: 28px;
+
+      border-radius: 8px;
+
+      background: #745037;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 15px;
+    }
+
+    .header-title {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      margin-left: auto;
+
+      width: 28px;
+      height: 28px;
+
+      border: 0;
+      background: transparent;
+
+      color: white;
+
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    /* -------------------------------------------------------
+       MAIN
+    ------------------------------------------------------- */
+
+    .container {
+      padding: 16px;
+
+      display: flex;
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+    /* -------------------------------------------------------
+       BRAND
+    ------------------------------------------------------- */
+
+    .brand {
+      background: white;
+
+      border: 1px solid #e5d9cf;
+
+      border-radius: 12px;
+
+      padding: 14px;
+
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+
+      border-radius: 11px;
+
+      background: #6e492f;
+      color: #f8e4bf;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+
+      color: #766960;
+
+      font-size: 11px;
+    }
+
+    /* -------------------------------------------------------
+       CARD
+    ------------------------------------------------------- */
+
+    .card {
+      background: white;
+
+      border: 1px solid #e4d9cf;
+
+      border-radius: 12px;
+
+      padding: 14px;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+
+      font-size: 13px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    /* -------------------------------------------------------
+       STATUS GRID
+    ------------------------------------------------------- */
+
+    .status-grid {
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 8px;
+    }
+
+    .status-item {
+      background: #f7f3ef;
+
+      border-radius: 8px;
+
+      padding: 10px;
+    }
+
+    .status-label {
+      display: block;
+
+      color: #80736b;
+
+      font-size: 10px;
+
+      margin-bottom: 3px;
+    }
+
+    .status-value {
+      font-size: 12px;
+      font-weight: 700;
+
+      color: #227344;
+    }
+
+    .status-value.error {
+      color: #b33d35;
+    }
+
+    /* -------------------------------------------------------
+       SELECTION
+    ------------------------------------------------------- */
+
+    .selection-box {
+      background: #d7c0b0;
+
+      border-radius: 10px;
+
+      padding: 12px;
+
+      min-height: 68px;
+    }
+
+    .selection-name {
+      font-size: 14px;
+      font-weight: 800;
+
+      margin-bottom: 4px;
+    }
+
+    .selection-type {
+      font-size: 10px;
+
+      color: #705b4d;
+    }
+
+    .selection-badge {
+      display: inline-block;
+
+      margin-top: 7px;
+
+      padding: 4px 8px;
+
+      border-radius: 999px;
+
+      background: #dff2dc;
+
+      color: #26753f;
+
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .selection-empty {
+      color: #776b64;
+
+      font-size: 12px;
+
+      padding: 8px 0;
+    }
+
+    /* -------------------------------------------------------
+       BUTTONS
+    ------------------------------------------------------- */
+
+    .btn {
+      border: 0;
+
+      border-radius: 8px;
+
+      padding: 10px 12px;
+
+      font-size: 12px;
+      font-weight: 700;
+
+      transition: 0.15s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-primary {
+      background: #6d4933;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #e9ddd2;
+      color: #4f392c;
+    }
+
+    .btn-light {
+      background: #f4efea;
+      color: #4d4038;
+
+      border: 1px solid #dfd4ca;
+    }
+
+    .button-row {
+      display: flex;
+
+      gap: 8px;
+
+      margin-top: 10px;
+    }
+
+    .button-row .btn {
+      flex: 1;
+    }
+
+    /* -------------------------------------------------------
+       FORM
+    ------------------------------------------------------- */
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+
+      font-size: 11px;
+      font-weight: 700;
+
+      margin-bottom: 5px;
+
+      color: #5d5048;
+    }
+
+    select,
+    input {
+      width: 100%;
+
+      height: 38px;
+
+      border: 1px solid #ddd1c8;
+
+      border-radius: 8px;
+
+      background: white;
+
+      padding: 0 10px;
+
+      font-size: 12px;
+
+      color: #332a25;
+
+      outline: none;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #8c684e;
+    }
+
+    /* -------------------------------------------------------
+       GENERATE
+    ------------------------------------------------------- */
+
+    .generate {
+      width: 100%;
+
+      margin-top: 4px;
+
+      height: 42px;
+
+      border: 0;
+
+      border-radius: 9px;
+
+      background: #6d4933;
+
+      color: white;
+
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .generate:disabled {
+      opacity: 0.5;
+
+      cursor: not-allowed;
+    }
+
+    /* -------------------------------------------------------
+       RESULTS
+    ------------------------------------------------------- */
+
+    .results {
+      display: none;
+    }
+
+    .results.visible {
+      display: block;
+    }
+
+    .suggestion {
+      border: 1px solid #dfd3ca;
+
+      border-radius: 10px;
+
+      padding: 11px;
+
+      margin-bottom: 8px;
+
+      background: #faf8f6;
+    }
+
+    .suggestion:last-child {
+      margin-bottom: 0;
+    }
+
+    .suggestion-top {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      margin-bottom: 7px;
+    }
+
+    .suggestion-label {
+      font-size: 10px;
+
+      color: #766960;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+    }
+
+    .readability {
+      padding: 3px 7px;
+
+      border-radius: 999px;
+
+      font-size: 9px;
+
+      background: #dff2dc;
+      color: #26753f;
+    }
+
+    .suggestion-text {
+      font-size: 13px;
+
+      font-weight: 700;
+
+      color: #30251f;
+
+      margin-bottom: 9px;
+    }
+
+    .suggestion-actions {
+      display: flex;
+
+      gap: 6px;
+    }
+
+    .suggestion-actions button {
+      flex: 1;
+
+      border: 0;
+
+      border-radius: 7px;
+
+      padding: 7px 8px;
+
+      font-size: 10px;
+
+      font-weight: 700;
+    }
+
+    .edit-btn {
+      background: #e4ddd7;
+      color: #4c4038;
+    }
+
+    .apply-btn {
+      background: #6d4933;
+      color: white;
+    }
+
+    /* -------------------------------------------------------
+       PREVIEW
+    ------------------------------------------------------- */
+
+    .preview {
+      display: none;
+    }
+
+    .preview.visible {
+      display: block;
+    }
+
+    .preview-box {
+      background: #f0ebe6;
+
+      border-radius: 10px;
+
+      padding: 15px;
+
+      text-align: center;
+
+      margin-bottom: 10px;
+    }
+
+    .preview-old {
+      font-size: 10px;
+
+      color: #81756d;
+
+      margin-bottom: 5px;
+    }
+
+    .preview-new {
+      font-size: 18px;
+
+      font-weight: 800;
+
+      color: #5c3d2b;
+    }
+
+    /* -------------------------------------------------------
+       MESSAGE
+    ------------------------------------------------------- */
+
+    .message {
+      display: none;
+
+      border-radius: 8px;
+
+      padding: 9px;
+
+      font-size: 11px;
+
+      line-height: 15px;
+    }
+
+    .message.visible {
+      display: block;
+    }
+
+    .message.success {
+      background: #ddf0d9;
+      color: #286b39;
+    }
+
+    .message.error {
+      background: #f7dddd;
+      color: #9b302c;
+    }
+
+    .message.info {
+      background: #e8e1da;
+      color: #63564d;
+    }
+
+    /* -------------------------------------------------------
+       CONTEXT
+    ------------------------------------------------------- */
+
+    .context {
+      display: none;
+    }
+
+    .context.visible {
+      display: block;
+    }
+
+    .context-line {
+      display: flex;
+
+      justify-content: space-between;
+
+      padding: 5px 0;
+
+      border-bottom: 1px solid #eee7e1;
+
+      font-size: 10px;
+    }
+
+    .context-line:last-child {
+      border-bottom: 0;
+    }
+
+    .context-label {
+      color: #80746b;
+    }
+
+    .context-value {
+      font-weight: 700;
+
+      color: #493a31;
+
+      max-width: 60%;
+
+      text-align: right;
+    }
+
+    /* -------------------------------------------------------
+       SCROLL
+    ------------------------------------------------------- */
+
+    body {
+      overflow-y: auto;
+    }
+
+    .footer-space {
+      height: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <header class="header">
+
+    <div class="header-icon">
+      ✦
+    </div>
+
+    <div class="header-title">
+      AI UX Writing Assistant
+    </div>
+
+    <button
+      id="closeBtn"
+      class="close-btn"
+      title="Close"
+    >
+      ×
+    </button>
+
+  </header>
+
+
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
+
+  <main class="container">
+
+
+    <!-- ===================================================
+         BRAND
+    ==================================================== -->
+
+    <section class="brand">
+
+      <div class="brand-icon">
+        ✦
+      </div>
+
+      <div>
+        <h1>
+          Sparkling UX Writing Assistant
+        </h1>
+
+        <p>
+          Generate contextual microcopy
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         STATUS
+    ==================================================== -->
+
+    <section class="card">
+
+      <h2 class="section-title">
+        Plugin Status
+      </h2>
+
+      <div class="status-grid">
+
+        <div class="status-item">
+          <span class="status-label">
+            Figma File
+          </span>
+
+          <span
+            id="fileStatus"
+            class="status-value"
+          >
+            Checking...
+          </span>
+        </div>
+
+
+        <div class="status-item">
+          <span class="status-label">
+            Compatibility
+          </span>
+
+          <span
+            id="compatibilityStatus"
+            class="status-value"
+          >
+            Checking...
+          </span>
+        </div>
+
+
+        <div class="status-item">
+          <span class="status-label">
+            Plugin Session
+          </span>
+
+          <span
+            id="sessionStatus"
+            class="status-value"
+          >
+            Checking...
+          </span>
+        </div>
+
+
+        <div class="status-item">
+          <span class="status-label">
+            Connection
+          </span>
+
+          <span
+            id="connectionStatus"
+            class="status-value"
+          >
+            Ready
+          </span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         SELECTION
+    ==================================================== -->
+
+    <section class="card">
+
+      <h2 class="section-title">
+        Selected UI Element
+      </h2>
+
+      <div
+        id="selectionBox"
+        class="selection-box"
+      >
+
+        <div
+          id="selectionName"
+          class="selection-name"
+        >
+          No element selected
+        </div>
+
+        <div
+          id="selectionType"
+          class="selection-type"
+        >
+          Select one UI element in Figma
+        </div>
+
+        <div
+          id="selectionBadge"
+          class="selection-badge"
+        >
+          Waiting for selection
+        </div>
+
+      </div>
+
+
+      <div
+        id="selectionMessage"
+        class="message info visible"
+      >
+        Select a text element in Figma to begin.
+      </div>
+
+
+      <div class="button-row">
+
+        <button
+          id="checkSelectionBtn"
+          class="btn btn-secondary"
+        >
+          Check Selection
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         CONTEXT
+    ==================================================== -->
+
+    <section
+      id="contextCard"
+      class="card context"
+    >
+
+      <h2 class="section-title">
+        Extracted Context
+      </h2>
+
+      <div class="context-line">
+
+        <span class="context-label">
+          Text
+        </span>
+
+        <span
+          id="contextText"
+          class="context-value"
+        >
+          —
+        </span>
+
+      </div>
+
+
+      <div class="context-line">
+
+        <span class="context-label">
+          Element
+        </span>
+
+        <span
+          id="contextElement"
+          class="context-value"
+        >
+          —
+        </span>
+
+      </div>
+
+
+      <div class="context-line">
+
+        <span class="context-label">
+          Parent
+        </span>
+
+        <span
+          id="contextParent"
+          class="context-value"
+        >
+          —
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         CONFIGURATION
+    ==================================================== -->
+
+    <section class="card">
+
+      <h2 class="section-title">
+        Microcopy Configuration
+      </h2>
+
+
+      <div class="form-group">
+
+        <label for="microcopyType">
+          Microcopy Type
+        </label>
+
+        <select id="microcopyType">
+
+          <option value="button">
+            Button Text
+          </option>
+
+          <option value="label">
+            Form Label
+          </option>
+
+          <option value="error">
+            Error Message
+          </option>
+
+          <option value="helper">
+            Helper Text
+          </option>
+
+          <option value="empty">
+            Empty State
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="persona">
+          Select Persona
+        </label>
+
+        <select id="persona">
+
+          <option value="student">
+            Student
+          </option>
+
+          <option value="professional">
+            Professional
+          </option>
+
+          <option value="general">
+            General User
+          </option>
+
+          <option value="beginner">
+            Beginner
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="tone">
+          Select Tone
+        </label>
+
+        <select id="tone">
+
+          <option value="friendly">
+            Friendly
+          </option>
+
+          <option value="professional">
+            Professional
+          </option>
+
+          <option value="simple">
+            Simple
+          </option>
+
+          <option value="encouraging">
+            Encouraging
+          </option>
+
+          <option value="concise">
+            Concise
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        id="generateBtn"
+        class="generate"
+        disabled
+      >
+        Generate Microcopy
+      </button>
+
+    </section>
+
+
+    <!-- ===================================================
+         MESSAGE
+    ==================================================== -->
+
+    <div
+      id="message"
+      class="message"
+    ></div>
+
+
+    <!-- ===================================================
+         RESULTS
+    ==================================================== -->
+
+    <section
+      id="results"
+      class="card results"
+    >
+
+      <h2 class="section-title">
+        Microcopy Suggestions
+      </h2>
+
+      <div id="suggestions"></div>
+
+    </section>
+
+
+    <!-- ===================================================
+         PREVIEW
+    ==================================================== -->
+
+    <section
+      id="preview"
+      class="card preview"
+    >
+
+      <h2 class="section-title">
+        Preview
+      </h2>
+
+      <div class="preview-box">
+
+        <div class="preview-old">
+          Current text
+        </div>
+
+        <div
+          id="previewOld"
+          class="preview-old"
+        >
+          —
+        </div>
+
+        <div class="preview-old">
+          New microcopy
+        </div>
+
+        <div
+          id="previewNew"
+          class="preview-new"
+        >
+          —
+        </div>
+
+      </div>
+
+
+      <div class="button-row">
+
+        <button
+          id="discardBtn"
+          class="btn btn-light"
+        >
+          Discard
+        </button>
+
+        <button
+          id="confirmBtn"
+          class="btn btn-primary"
+        >
+          Apply to Design
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         MANUAL EDIT
+    ==================================================== -->
+
+    <section
+      id="editCard"
+      class="card"
+      style="display:none;"
+    >
+
+      <h2 class="section-title">
+        Edit Microcopy
+      </h2>
+
+      <div class="form-group">
+
+        <label for="editInput">
+          Edit suggestion
+        </label>
+
+        <input
+          id="editInput"
+          type="text"
+          placeholder="Enter your microcopy"
+        />
+
+      </div>
+
+      <button
+        id="saveEditBtn"
+        class="btn btn-primary"
+        style="width:100%;"
+      >
+        Apply Edited Text
+      </button>
+
+    </section>
+
+
+    <div class="footer-space"></div>
+
+  </main>
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+  ====================================================== -->
+
+  <script>
+
+    // =====================================================
+    // STATE
+    // =====================================================
+
+    let selectedElementId = null;
+    let selectedElementName = "";
+    let selectedElementType = "";
+    let selectedElementText = "";
+    let generatedSuggestions = [];
+    let currentPreviewText = "";
+
+
+    // =====================================================
+    // DOM ELEMENTS
+    // =====================================================
+
+    const fileStatus =
+      document.getElementById("fileStatus");
+
+    const compatibilityStatus =
+      document.getElementById("compatibilityStatus");
+
+    const sessionStatus =
+      document.getElementById("sessionStatus");
+
+    const connectionStatus =
+      document.getElementById("connectionStatus");
+
+    const selectionName =
+      document.getElementById("selectionName");
+
+    const selectionType =
+      document.getElementById("selectionType");
+
+    const selectionBadge =
+      document.getElementById("selectionBadge");
+
+    const selectionMessage =
+      document.getElementById("selectionMessage");
+
+    const checkSelectionBtn =
+      document.getElementById("checkSelectionBtn");
+
+    const generateBtn =
+      document.getElementById("generateBtn");
+
+    const results =
+      document.getElementById("results");
+
+    const suggestions =
+      document.getElementById("suggestions");
+
+    const preview =
+      document.getElementById("preview");
+
+    const previewOld =
+      document.getElementById("previewOld");
+
+    const previewNew =
+      document.getElementById("previewNew");
+
+    const editCard =
+      document.getElementById("editCard");
+
+    const editInput =
+      document.getElementById("editInput");
+
+    const message =
+      document.getElementById("message");
+
+    const contextCard =
+      document.getElementById("contextCard");
+
+    const contextText =
+      document.getElementById("contextText");
+
+    const contextElement =
+      document.getElementById("contextElement");
+
+    const contextParent =
+      document.getElementById("contextParent");
+
+    const microcopyType =
+      document.getElementById("microcopyType");
+
+    const persona =
+      document.getElementById("persona");
+
+    const tone =
+      document.getElementById("tone");
+
+    const closeBtn =
+      document.getElementById("closeBtn");
+
+    const discardBtn =
+      document.getElementById("discardBtn");
+
+    const confirmBtn =
+      document.getElementById("confirmBtn");
+
+    const saveEditBtn =
+      document.getElementById("saveEditBtn");
+
+
+    // =====================================================
+    // UTILITY
+    // =====================================================
+
+    function showMessage(text, type = "info") {
+
+      message.textContent = text;
+
+      message.className =
+        "message visible " + type;
+    }
+
+
+    function hideMessage() {
+
+      message.className =
+        "message";
+    }
+
+
+    // =====================================================
+    // STATUS
+    // =====================================================
+
+    function updateStatus(
+      element,
+      value,
+      success = true
+    ) {
+
+      element.textContent = value;
+
+      element.className =
+        success
+          ? "status-value"
+          : "status-value error";
+    }
+
+
+    // =====================================================
+    // ENABLE GENERATE
+    // =====================================================
+
+    function updateGenerateState() {
+
+      generateBtn.disabled =
+        !selectedElementId;
+    }
+
+
+    // =====================================================
+    // SEND MESSAGE TO FIGMA
+    // =====================================================
+
+    function send(type, data = {}) {
+
+      parent.postMessage(
+        {
+          pluginMessage: {
+            type,
+            ...data
+          }
+        },
+        "*"
+      );
+    }
+
+
+    // =====================================================
+    // CHECK SELECTION
+    // =====================================================
+
+    checkSelectionBtn.addEventListener(
+      "click",
+      () => {
+
+        send("GET_SELECTION");
+
+      }
+    );
+
+
+    // =====================================================
+    // GENERATE MICROCOPY
+    //
+    // This currently uses local demo suggestions.
+    //
+    // Later Musaffar's API can replace this section.
+    // =====================================================
+
+    generateBtn.addEventListener(
+      "click",
+      () => {
+
+        if (!selectedElementId) {
+
+          showMessage(
+            "Please select a UI element first.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        const type =
+          microcopyType.value;
+
+        const selectedPersona =
+          persona.value;
+
+        const selectedTone =
+          tone.value;
+
+
+        generatedSuggestions =
+          generateLocalSuggestions(
+            selectedElementText,
+            type,
+            selectedPersona,
+            selectedTone
+          );
+
+
+        renderSuggestions(
+          generatedSuggestions
+        );
+
+
+        results.classList.add(
+          "visible"
+        );
+
+
+        showMessage(
+          "Microcopy suggestions generated.",
+          "success"
+        );
+
+      }
+    );
+
+
+    // =====================================================
+    // LOCAL DEMO GENERATOR
+    // =====================================================
+
+    function generateLocalSuggestions(
+      currentText,
+      type,
+      selectedPersona,
+      selectedTone
+    ) {
+
+      const text =
+        (currentText || "").toLowerCase();
+
+
+      if (
+        type === "button" ||
+        text.includes("submit") ||
+        text.includes("get start") ||
+        text.includes("start")
+      ) {
+
+        return [
+          {
+            text: "Get Started",
+            readability: "High Readability"
+          },
+          {
+            text: "Continue",
+            readability: "High Readability"
+          },
+          {
+            text: "Start Now",
+            readability: "Medium Readability"
+          }
+        ];
+      }
+
+
+      if (type === "error") {
+
+        return [
+          {
+            text: "Something went wrong. Please try again.",
+            readability: "High Readability"
+          },
+          {
+            text: "We couldn't complete that action.",
+            readability: "High Readability"
+          },
+          {
+            text: "Please check your information and try again.",
+            readability: "Medium Readability"
+          }
+        ];
+      }
+
+
+      if (type === "label") {
+
+        return [
+          {
+            text: "Enter your information",
+            readability: "High Readability"
+          },
+          {
+            text: "Your details",
+            readability: "High Readability"
+          },
+          {
+            text: "Tell us about yourself",
+            readability: "Medium Readability"
+          }
+        ];
+      }
+
+
+      if (type === "helper") {
+
+        return [
+          {
+            text: "Enter the information requested below.",
+            readability: "High Readability"
+          },
+          {
+            text: "Use a clear and easy-to-remember value.",
+            readability: "Medium Readability"
+          },
+          {
+            text: "You can change this later.",
+            readability: "High Readability"
+          }
+        ];
+      }
+
+
+      return [
+        {
+          text: "Continue",
+          readability: "High Readability"
+        },
+        {
+          text: "Get Started",
+          readability: "High Readability"
+        },
+        {
+          text: "Learn More",
+          readability: "Medium Readability"
+        }
+      ];
+    }
+
+
+    // =====================================================
+    // RENDER SUGGESTIONS
+    // =====================================================
+
+    function renderSuggestions(items) {
+
+      suggestions.innerHTML = "";
+
+
+      items.forEach(
+        (item, index) => {
+
+          const wrapper =
+            document.createElement("div");
+
+          wrapper.className =
+            "suggestion";
+
+
+          wrapper.innerHTML = `
+
+            <div class="suggestion-top">
+
+              <span class="suggestion-label">
+                Suggestion ${index + 1}
+              </span>
+
+              <span class="readability">
+                ${item.readability}
+              </span>
+
+            </div>
+
+            <div class="suggestion-text">
+              ${escapeHtml(item.text)}
+            </div>
+
+            <div class="suggestion-actions">
+
+              <button
+                class="edit-btn"
+                data-index="${index}"
+              >
+                Edit
+              </button>
+
+              <button
+                class="apply-btn"
+                data-index="${index}"
+              >
+                Preview
+              </button>
+
+            </div>
+
+          `;
+
+
+          suggestions.appendChild(
+            wrapper
+          );
+        }
+      );
+
+
+      document
+        .querySelectorAll(".edit-btn")
+        .forEach(
+          (button) => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                const index =
+                  Number(
+                    button.dataset.index
+                  );
+
+                openEditor(
+                  generatedSuggestions[index].text
+                );
+
+              }
+            );
+
+          }
+        );
+
+
+      document
+        .querySelectorAll(".apply-btn")
+        .forEach(
+          (button) => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                const index =
+                  Number(
+                    button.dataset.index
+                  );
+
+                openPreview(
+                  generatedSuggestions[index].text
+                );
+
+              }
+            );
+
+          }
+        );
+    }
+
+
+    // =====================================================
+    // ESCAPE HTML
+    // =====================================================
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+
+    // =====================================================
+    // OPEN PREVIEW
+    // Shofnam
+    // =====================================================
+
+    function openPreview(text) {
+
+      currentPreviewText = text;
+
+      previewOld.textContent =
+        selectedElementText || "—";
+
+      previewNew.textContent =
+        text;
+
+      preview.classList.add(
+        "visible"
+      );
+
+      send(
+        "PREVIEW_MICROCOPY",
+        {
+          text
+        }
+      );
+    }
+
+
+    // =====================================================
+    // CONFIRM PREVIEW
+    // =====================================================
+
+    confirmBtn.addEventListener(
+      "click",
+      () => {
+
+        if (!currentPreviewText) {
+          return;
+        }
+
+        send(
+          "CONFIRM_PREVIEW"
+        );
+
+        send(
+          "EXPORT_MICROCOPY",
+          {
+            text: currentPreviewText
+          }
+        );
+      }
+    );
+
+
+    // =====================================================
+    // DISCARD PREVIEW
+    // =====================================================
+
+    discardBtn.addEventListener(
+      "click",
+      () => {
+
+        send(
+          "DISCARD_PREVIEW"
+        );
+
+        preview.classList.remove(
+          "visible"
+        );
+
+        currentPreviewText = "";
+
+        showMessage(
+          "Preview discarded.",
+          "info"
+        );
+      }
+    );
+
+
+    // =====================================================
+    // OPEN EDITOR
+    // =====================================================
+
+    function openEditor(text) {
+
+      editInput.value =
+        text || "";
+
+      editCard.style.display =
+        "block";
+
+      editInput.focus();
+
+      editInput.select();
+    }
+
+
+    // =====================================================
+    // SAVE EDIT
+    // =====================================================
+
+    saveEditBtn.addEventListener(
+      "click",
+      () => {
+
+        const value =
+          editInput.value.trim();
+
+
+        if (!value) {
+
+          showMessage(
+            "Microcopy cannot be empty.",
+            "error"
+          );
+
+          return;
+        }
+
+
+        openPreview(value);
+
+        editCard.style.display =
+          "none";
+      }
+    );
+
+
+    // =====================================================
+    // CLOSE
+    // =====================================================
+
+    closeBtn.addEventListener(
+      "click",
+      () => {
+
+        send(
+          "CLOSE_PLUGIN"
+        );
+
+      }
+    );
+
+
+    // =====================================================
+    // RECEIVE FIGMA MESSAGES
+    // =====================================================
+
+    window.onmessage = (
+      event
+    ) => {
+
+      const msg =
+        event.data.pluginMessage;
+
+
+      if (!msg) {
+        return;
+      }
+
+
+      // ===================================================
+      // PLUGIN READY
+      // ===================================================
+
+      if (
+        msg.type ===
+        "PLUGIN_READY"
+      ) {
+
+        updateStatus(
+          fileStatus,
+          msg.fileAvailable
+            ? "Valid"
+            : "Unavailable",
+          msg.fileAvailable
+        );
+
+
+        updateStatus(
+          compatibilityStatus,
+          msg.compatible
+            ? "Compatible"
+            : "Not Compatible",
+          msg.compatible
+        );
+
+
+        updateStatus(
+          sessionStatus,
+          msg.sessionActive
+            ? "Active"
+            : "Inactive",
+          msg.sessionActive
+        );
+
+
+        updateStatus(
+          connectionStatus,
+          "Connected",
+          true
+        );
+
+        return;
+      }
+
+
+      // ===================================================
+      // PLUGIN STATUS
+      // ===================================================
+
+      if (
+        msg.type ===
+        "PLUGIN_STATUS"
+      ) {
+
+        updateStatus(
+          fileStatus,
+          msg.fileAvailable
+            ? "Valid"
+            : "Unavailable",
+          msg.fileAvailable
+        );
+
+
+        updateStatus(
+          compatibilityStatus,
+          msg.compatible
+            ? "Compatible"
+            : "Not Compatible",
+          msg.compatible
+        );
+
+
+        updateStatus(
+          sessionStatus,
+          msg.sessionActive
+            ? "Active"
+            : "Inactive",
+          msg.sessionActive
+        );
+
+        return;
+      }
+
+
+      // ===================================================
+      // ELEMENT SELECTED
+      // Chanika → UI
+      // ===================================================
+
+      if (
+        msg.type ===
+        "ELEMENT_SELECTED"
+      ) {
+
+        selectedElementId =
+          msg.elementId;
+
+        selectedElementName =
+          msg.elementName || "";
+
+        selectedElementType =
+          msg.elementType || "";
+
+        selectedElementText =
+          msg.text || "";
+
+
+        selectionName.textContent =
+          selectedElementName ||
+          "Selected element";
+
+
+        selectionType.textContent =
+          `Type: ${selectedElementType}`;
+
+
+        selectionBadge.textContent =
+          "Validated";
+
+
+        selectionMessage.className =
+          "message visible success";
+
+
+        selectionMessage.textContent =
+          "UI element successfully detected and validated.";
+
+
+        contextCard.classList.add(
+          "visible"
+        );
+
+
+        contextText.textContent =
+          selectedElementText ||
+          "No text content";
+
+
+        contextElement.textContent =
+          selectedElementType;
+
+
+        contextParent.textContent =
+          msg.parent ||
+          "No parent";
+
+
+        generateBtn.disabled =
+          false;
+
+
+        updateGenerateState();
+
+        return;
+      }
+
+
+      // ===================================================
+      // INVALID SELECTION
+      // ===================================================
+
+      if (
+        msg.type ===
+        "SELECTION_INVALID"
+      ) {
+
+        selectedElementId =
+          null;
+
+        selectedElementName =
+          "";
+
+        selectedElementType =
+          "";
+
+        selectedElementText =
+          "";
+
+
+        selectionName.textContent =
+          "No valid selection";
+
+
+        selectionType.textContent =
+          msg.message;
+
+
+        selectionBadge.textContent =
+          "Not Validated";
+
+
+        selectionMessage.className =
+          "message visible error";
+
+
+        selectionMessage.textContent =
+          msg.message;
+
+
+        contextCard.classList.remove(
+          "visible"
+        );
+
+
+        generateBtn.disabled =
+          true;
+
+
+        return;
+      }
+
+
+      // ===================================================
+      // CONFIGURATION
+      // ===================================================
+
+      if (
+        msg.type ===
+        "OPEN_CONFIGURATION"
+      ) {
+
+        showMessage(
+          "Element is ready for microcopy configuration.",
+          "success"
+        );
+
+        return;
+      }
+
+
+      // ===================================================
+      // PREVIEW SUCCESS
+      // ===================================================
+
+      if (
+        msg.type ===
+        "PREVIEW_SUCCESS"
+      ) {
+
+        currentPreviewText =
+          msg.text;
+
+        return;
+      }
+
+
+      // ===================================================
+      // PREVIEW CONFIRMED
+      // ===================================================
+
+      if (
+        msg.type ===
+        "PREVIEW_CONFIRMED"
+      ) {
+
+        showMessage(
+          msg.message ||
+          "Preview confirmed.",
+          "success"
+        );
+
+        return;
+      }
+
+
+      // ===================================================
+      // PREVIEW DISCARDED
+      // ===================================================
+
+      if (
+        msg.type ===
+        "PREVIEW_DISCARDED"
+      ) {
+
+        preview.classList.remove(
+          "visible"
+        );
+
+        currentPreviewText =
+          "";
+
+        showMessage(
+          msg.message ||
+          "Preview discarded.",
+          "info"
+        );
+
+        return;
+      }
+
+
+      // ===================================================
+      // EXPORT SUCCESS
+      // ===================================================
+
+      if (
+        msg.type ===
+        "EXPORT_SUCCESS"
+      ) {
+
+        selectedElementText =
+          msg.text;
+
+
+        showMessage(
+          msg.message ||
+          "Microcopy applied successfully.",
+          "success"
+        );
+
+
+        preview.classList.remove(
+          "visible"
+        );
+
+
+        currentPreviewText =
+          "";
+
+
+        return;
+      }
+
+
+      // ===================================================
+      // ERROR
+      // ===================================================
+
+      if (
+        msg.type ===
+        "ERROR"
+      ) {
+
+        showMessage(
+          msg.message ||
+          "Something went wrong.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      // ===================================================
+      // RETRY
+      // ===================================================
+
+      if (
+        msg.type ===
+        "RETRY_READY"
+      ) {
+
+        showMessage(
+          msg.message ||
+          "Ready to retry.",
+          "info"
+        );
+
+        return;
+      }
+
+    };
+
+
+    // =====================================================
+    // INITIAL STATUS CHECK
+    // =====================================================
+
+    send(
+      "CHECK_PLUGIN_STATUS"
+    );
+
+  </script>
+
+</body>
+</html>
