@@ -1,0 +1,2 @@
+# Sparkling-AI-Powered-UX-Writing-Assistant-with-Contextual-Microcopy-Suggestions-Plugin-for-Figma
+AI-Powered UX Writing Assistant is a Figma plugin that generates context-aware microcopy using AI. It analyzes selected UI elements and suggests clear, accessible, and user-friendly text based on context, tone, and user intent, helping designers create consistent, intuitive, and inclusive digital experiences.
