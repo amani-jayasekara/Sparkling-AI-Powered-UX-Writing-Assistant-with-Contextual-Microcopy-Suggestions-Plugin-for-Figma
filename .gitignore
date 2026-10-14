@@ -1,3 +1,15 @@
+# Node.js and build output
+node_modules/
+dist/
+*.log
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
 # Python
 __pycache__/
 *.py[cod]
@@ -23,11 +35,6 @@ models/
 .cache/
 huggingface_cache/
 
-# Secrets
-.env
-*.key
-*.pem
-
-# OS
+# Operating system
 .DS_Store
 Thumbs.db

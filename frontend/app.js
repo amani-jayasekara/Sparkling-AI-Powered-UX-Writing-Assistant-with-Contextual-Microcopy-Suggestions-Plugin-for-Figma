@@ -1,0 +1,103 @@
+require("dotenv").config();
+
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+
+// Database
+const db = require("./database/db");
+
+// Routes
+const preferencesRoute = require("./routes/preferences");
+const generateRoute = require("./routes/generate");
+const feedbackRoute = require("./routes/feedbackRoutes");
+const historyRoute = require("./routes/historyRoutes");
+const sessionRoute = require("./routes/sessionRoutes");
+
+const app = express();
+
+
+// ============================================
+// Middleware
+// ============================================
+
+app.use(cors());
+
+app.use(bodyParser.json());
+
+
+// ============================================
+// Home Route
+// ============================================
+
+app.get("/", (req, res) => {
+
+    res.send("Sparkling UX Backend is Running!");
+
+});
+
+
+// ============================================
+// Existing Routes
+// ============================================
+
+// User Preferences
+app.use(
+    "/preferences",
+    preferencesRoute
+);
+
+
+// Microcopy Generation
+app.use(
+    "/generate",
+    generateRoute
+);
+
+
+// History
+app.use(
+    "/",
+    historyRoute
+);
+
+
+// Feedback
+app.use(
+    "/",
+    feedbackRoute
+);
+
+
+// ============================================
+// Plugin Session Routes
+// FR-01 to FR-05
+// FR-09 — Link UI Element to Session
+// ============================================
+
+app.use(
+    "/",
+    sessionRoute
+);
+
+
+// ============================================
+// Server Configuration
+// ============================================
+
+const config = require("./config/env");
+
+const PORT = config.PORT || 3000;
+
+
+// ============================================
+// Start Server
+// ============================================
+
+app.listen(PORT, () => {
+
+    console.log(
+        `Server running on http://localhost:${PORT}`
+    );
+
+});
