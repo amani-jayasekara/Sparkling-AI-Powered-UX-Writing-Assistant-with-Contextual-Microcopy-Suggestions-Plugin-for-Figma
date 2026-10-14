@@ -1,6 +1,40 @@
+# Node.js and build output
 node_modules/
+dist/
+*.log
+
+# Environment variables and secrets
 .env
 .env.*
 !.env.example
-dist/
-*.log
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model weights
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Local model directories
+final_adapter/
+sparkling_qlora/
+models/
+
+# Hugging Face cache
+.cache/
+huggingface_cache/
+
+# Operating system
+.DS_Store
+Thumbs.db
